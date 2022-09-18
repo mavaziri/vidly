@@ -9,6 +9,7 @@ describe("auth middleware", () => {
     const req = {
       header: jest.fn().mockReturnValue(token),
     };
+
     const res = {};
     const next = jest.fn();
 

@@ -1,10 +1,12 @@
 const auth = require("../middleware/auth");
-const { validate, Rental } = require("../models/rental");
+const { ValidateRental, Rental } = require("../models/rental");
 const { Movie } = require("../models/movie");
 const { Customer } = require("../models/customer");
 const mongoose = require("mongoose");
+const winston = require("winston");
 const Transaction = require("mongoose-transactions");
 const express = require("express");
+const validate = require("../middleware/validate");
 const router = express.Router();
 
 const transaction = new Transaction();
@@ -15,12 +17,7 @@ router.get("/", auth, async (req, res) => {
   res.send(rental);
 });
 
-router.post("/", auth, async (req, res) => {
-  const result = new validate(req.body);
-  const { error } = result.validator();
-  if (error)
-   return res.status(400).send(error.details[0].message);
-
+router.post("/", [auth, validate(ValidateRental)], async (req, res) => {
   const customer = await Customer.findById(req.body.customerId);
   if (!customer)
    return res.status(400).send("Invalid customer!");
@@ -58,8 +55,8 @@ router.post("/", auth, async (req, res) => {
 
     res.send(rental);
   } catch (ex) {
-    console.error(ex);
-    await transaction.rollback().catch(console.error);
+    winston.info(ex);
+    await transaction.rollback().catch(winston.error());
     transaction.clean();
     res.status(500).send("Something failed.");
   }

@@ -24,4 +24,4 @@ function ValidateCustomer(customer) {
 }
 
 exports.Customer = Customer;
-exports.validate = ValidateCustomer;
+exports.ValidateCustomer = ValidateCustomer;

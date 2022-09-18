@@ -71,4 +71,4 @@ function ValidateRental(rental) {
 }
 
 exports.Rental = Rental;
-exports.validate = ValidateRental;
+exports.ValidateRental = ValidateRental;

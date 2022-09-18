@@ -1,52 +1,48 @@
 const validateObjectId = require("../middleware/validateObjectId");
+const asyncMiddleware = require("../middleware/async");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
+const validate = require("../middleware/validate");
 const { ValidateGenre, Genre } = require("../models/genre");
 const express = require("express");
+const app = express();
 const router = express.Router();
-
+// const debugHttp = require("debug")("http");
 
 router.get("/", async (req, res) => {
   const genre = await Genre.find().sort({ name: 1 }).select({ name: 1 });
-
   res.send(genre);
 });
 
-router.post("/", auth, async (req, res) => {
-  const result = new ValidateGenre(req.body);
-  const { error } = result.validator();
-  if (error)
-   return res.status(400).send(error.details[0].message);
-
+router.post("/", [auth, validate(ValidateGenre)], async (req, res) => {
   let genre = new Genre({ name: req.body.name });
   genre = await genre.save();
 
   res.send(genre);
 });
 
-router.put("/:id", async (req, res) => {
-  const result = new ValidateGenre(req.body);
-  const { error } = result.validator();
-  if (error)
-   return res.status(400).send(error.details[0].message);
-
-  const genre = await Genre.findByIdAndUpdate(
-    req.params.id,
-    {
-      $set: {
-        name: req.body.name,
+router.put(
+  "/:id",
+  [auth, validateObjectId, validate(ValidateGenre)],
+  async (req, res) => {
+    const genre = await Genre.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          name: req.body.name,
+        },
       },
-    },
-    { new: true }
-  );
+      { new: true }
+    );
 
-  if (!genre)
-    return res.status(404).send("The genre with the given ID was not found.");
+    if (!genre)
+      return res.status(404).send("The genre with the given ID was not found.");
 
-  res.send(genre);
-});
+    res.send(genre);
+  }
+);
 
-router.delete("/:id", [auth, admin], async (req, res) => {
+router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
   const genre = await Genre.findByIdAndRemove(req.params.id);
 
   if (!genre)

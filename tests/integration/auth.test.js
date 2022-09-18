@@ -9,25 +9,25 @@ describe("auth middleware", () => {
     server = require("../../index");
   });
 
-  afterEach( () => {
-     server.close();
+  afterEach(async () => {
+    await server.close();
   });
 
   let token;
-  
+
   const exec = () => {
     return request(server)
-    .post("/api/genres")
-    .set("x-auth-token", token)
-    .send({ name: "genre1" });
+      .post("/api/genres")
+      .set("x-auth-token", token)
+      .send({ name: "genre1" });
   };
-  
+
   beforeEach(() => {
     token = new User().generateAuthToken();
   });
-  
-  afterAll(() => mongoose.disconnect());
-  
+
+  afterAll(async () => await mongoose.disconnect());
+
   it("should return 401 if no token is provided", async () => {
     token = "";
 

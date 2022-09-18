@@ -51,4 +51,4 @@ function ValidateMovie(movie) {
 }
 
 exports.Movie = Movie;
-exports.validate = ValidateMovie;
+exports.ValidateMovie = ValidateMovie;
