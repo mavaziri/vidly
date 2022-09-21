@@ -113,48 +113,4 @@ describe("/api/rentals", () => {
       expect(res.status).toBe(400);
     });
   });
-
-//   describe("PUT /", () => {
-//     let token;
-//     let rental;
-//     let newName;
-//     let newPhone;
-//     let newTitle;
-//     let newDailyRentalRate;
-
-//     const exec = async () => {
-//       return await request(server)
-//         .put(`/api/rentals/${id}`)
-//         .set("x-auth-token", token)
-//         .send(rental);
-//     };
-
-//     beforeEach(async () => {
-//       token = new User().generateAuthToken();
-//       newName = "Customer1";
-//       newPhone = "12345";
-//       newTitle = "Movie1";
-//       newDailyRentalRate = 2;
-
-//       rental = new Rental({
-//         customer: {
-//           name: newName,
-//           phone: newPhone,
-//         },
-//         movie: {
-//           title: newTitle,
-//           dailyRentalRate: newDailyRentalRate,
-//         },
-//       });
-//       await rental.save();
-//     });
-//   });
-
-//   it("should retun 401 if client is not logged in", async () => {
-//     token = "";
-
-//     const res = await exec();
-
-//     expect(res.status).toBe(401);
-//   });
 });
